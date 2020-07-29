@@ -1,5 +1,6 @@
+import torch
 from model import RNN
-from data import lineToTensor, all_categories, torch, n_letters, n_categories
+from data import lineToTensor, all_categories, n_letters, n_categories
 
 n_hidden = 128
 rnn = RNN(n_letters, n_hidden, n_categories)
@@ -21,6 +22,7 @@ def predict(line, n_predictions=3):
 
     # Get top N categories
     topv, topi = output.data.topk(n_predictions, 1, True)
+    topv = torch.exp(topv)
     predictions = []
 
     for i in range(n_predictions):
@@ -38,4 +40,6 @@ def main(input_dict):
     n_predictions = input_dict.get('n_predictions', 1)
     return predict(line, n_predictions)
 
+
+# print(main(dict(name='Miyazaki', n_predictions=3)))
 
